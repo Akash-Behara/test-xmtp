@@ -6,13 +6,13 @@ import path from 'path'
 export default defineConfig({
   plugins: [react()],
   optimizeDeps: {
-    exclude: ["@xmtp/browser-sdk", "sqlite3", "sqlite-wasm"],
+    exclude: ["@xmtp/browser-sdk"],
     include: ["@xmtp/proto"],
   },
   server: {
     headers: {
-      // "Cross-Origin-Embedder-Policy": "require-corp",
-      // "Cross-Origin-Opener-Policy": "same-origin",
+      "Cross-Origin-Embedder-Policy": "require-corp",
+      "Cross-Origin-Opener-Policy": "same-origin",
     },
   },
   resolve: {

@@ -76,9 +76,9 @@ const Messages = ({ client, selectedConversation, handleDeSelectConversation }: 
           </div>
           <div>
             <p className="font-semibold text-white88">{selectedConversation?.name}</p>
-            <div>
+            <div className="flex items-center gap-2">
               {isLoadingMembers ? <div>Loading...</div> : members?.map((member, idx) => (
-                <p key={idx} className="text-white32 text-[12px]">{member.accountAddresses[0]}</p>
+                <p key={idx} className="text-white32 text-[12px]">{member.accountAddresses[0]?.slice(0, 5) + "..." + member?.accountAddresses[0]?.slice(-5)} {idx < members.length - 1 && ","}</p>
               ))}
             </div>
           </div>
@@ -86,7 +86,9 @@ const Messages = ({ client, selectedConversation, handleDeSelectConversation }: 
       </div>
 
       <div className="flex-1 overflow-y-auto p-2 bg-black40">
-        {isLoadingMessages ? <div>Loading...</div> : messages?.map((message, idx) => {
+        {isLoadingMessages ? <div>Loading...</div> :
+        messages?.length == 0 ? <div className="text-white64">No messages found</div> :
+        messages?.map((message, idx) => {
           if(message?.contentType?.typeId != "text") return null
           return <div key={idx}>
             <p className="text-white88">{message?.content}</p>

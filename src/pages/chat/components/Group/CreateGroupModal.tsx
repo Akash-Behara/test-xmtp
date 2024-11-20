@@ -43,7 +43,7 @@ const CreateGroupModal = () => {
     <div>
       <Popover>
         <PopoverTrigger><div className="bg-white4 rounded-md p-2"><Plus size={18} weight="bold" className="text-white88"/></div></PopoverTrigger>
-        <PopoverContent className="bg-black90 border border-white12 min-w-[150px] mx-2 w-[95vw] md:w-[400px] p-0 overflow-hidden relative h-full">
+        <PopoverContent className="bg-black90 border border-white12 min-w-[150px] mx-2 mr-3 w-[95vw] md:w-[400px] p-0 overflow-hidden relative h-full">
 
           <div onClick={handleMakeNewGroup} className={`${isMakingNewGroup ? "hidden" : "block"} text-white88 text-[14px] flex items-center gap-2 hover:bg-black70 cursor-pointer p-2`}><UsersThree size={18}/> New Group</div>
 

@@ -68,11 +68,11 @@ const Messages = ({ client, selectedConversation, handleDeSelectConversation }: 
     <div className="h-screen flex flex-col rounded-md">
       <div className="h-[80px] flex items-center bg-black60 p-2">
         <div className="mr-2 block md:hidden">
-          <ArrowLeft size={20} weight="bold" onClick={handleDeSelectConversation} className="cursor-pointer"/>
+          <ArrowLeft size={20} weight="bold" onClick={handleDeSelectConversation} className="cursor-pointer text-white88"/>
         </div>
         <div className="flex items-center gap-2">
           <div className="bg-white/80 rounded-full p-2">
-            <UsersThree size={34}/>
+            <UsersThree className="size-4 md:size-8"/>
           </div>
           <div>
             <p className="font-semibold text-white88">{selectedConversation?.name}</p>
@@ -89,7 +89,7 @@ const Messages = ({ client, selectedConversation, handleDeSelectConversation }: 
         {isLoadingMessages ? <div>Loading...</div> : messages?.map((message, idx) => {
           if(message?.contentType?.typeId != "text") return null
           return <div key={idx}>
-            <p>{message?.content}</p>
+            <p className="text-white88">{message?.content}</p>
           </div>
         })}
       </div>
@@ -102,7 +102,7 @@ const Messages = ({ client, selectedConversation, handleDeSelectConversation }: 
         <div className={`w-full flex items-center mx-auto relative bg-black70 transition duration-300 ${isExpanded ? "rounded-md" : " rounded-full"}`}>
           <textarea
             ref={textareaRef}
-            className={`w-full max-w-[97%] px-3 py-2 text-sm outline-none resize-none overflow-hidden bg-transparent transition duration-300 ${
+            className={`w-full max-w-[97%] px-3 py-2 text-sm text-white88 outline-none resize-none overflow-hidden bg-transparent transition duration-300 ${
               isExpanded ? "rounded-md" : "rounded-full"
             }`}
 

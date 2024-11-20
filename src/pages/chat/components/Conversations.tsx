@@ -3,7 +3,6 @@ import { useQuery } from "@tanstack/react-query";
 import { UsersThree } from "@phosphor-icons/react";
 import { Client, Conversation } from "@xmtp/browser-sdk";
 import CreateGroupModal from "./Group/CreateGroupModal";
-import { useEffect } from "react";
 
 interface ConversationsProps {
   client: Client | null;
@@ -20,15 +19,15 @@ const Conversations = ({ client, handleSelectConversation }: ConversationsProps)
     enabled: !!client
   })
 
-  useEffect(() => {
-    if(!conversationList) return
-    handleSelectConversation(conversationList[0])
-  }, [conversationList])
+  // useEffect(() => {
+  //   if(!conversationList) return
+  //   handleSelectConversation(conversationList[0])
+  // }, [conversationList])
 
   return (
     <div className="h-screen flex flex-col bg-black70">
       <div className="h-[100px] flex flex-col justify-between items-end p-2">
-        <CreateGroupModal />
+        <CreateGroupModal client={client}/>
         <div className="flex items-center gap-2">
           <div className="w-fit px-4 py-[2px] text-white88 border border-green-900 rounded-full bg-green-200/20 hover:bg-green-200/30 cursor-pointer text-[14px] font-semibold">All</div>
           <div className="w-fit px-4 py-[2px] text-white88 border border-green-900 rounded-full bg-green-200/20 hover:bg-green-200/30 cursor-pointer text-[14px] font-semibold">1:1</div>
@@ -38,7 +37,7 @@ const Conversations = ({ client, handleSelectConversation }: ConversationsProps)
       <div className="flex-1 overflow-y-auto">
         {isLoadingConversations
           ? <div>Loading...</div>
-          : conversationList?.length == 0 ? <div>No conversations</div>
+          : conversationList?.length == 0 ? <div className="text-white64 px-4 mt-4">No conversations Found</div>
           : conversationList?.map((conversation) => (
             <div key={conversation?.id} onClick={() => handleSelectConversation(conversation)} className="flex justify-between items-center py-3 px-2 cursor-pointer hover:bg-white/10 rounded-sm transition duration-200">
               <div className="flex items-center gap-2">

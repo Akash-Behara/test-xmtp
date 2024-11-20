@@ -1,24 +1,40 @@
+import { Client, Conversation, Signer } from "@xmtp/browser-sdk";
 import { useCallback, useEffect, useState } from "react";
-import { Client, Conversation } from "@xmtp/browser-sdk";
-import { createClient } from "./utils/createClient";
 import Conversations from "./components/Conversations";
 import Messages from "./components/Messages";
+import { createClient } from "./utils/createClient";
+import { toBytes } from "viem/utils";
+
+import { useEthersProvider } from "@/providers/ethersProvider";
+import { useEthersSigner } from "@/providers/ethersSigner";
+
 
 const Chat = () => {
+
+  const etherProvider = useEthersProvider();
+  const etherSigner = useEthersSigner();
 
   const [client, setClient] = useState<Client | null>(null);
   const [selectedConversation, setSelectedConversation] = useState<Conversation | undefined>();
 
   const handleCreateClient = useCallback(async () => {
-    const client = await createClient("key1");
+    const signer: Signer = {
+      getAddress: () => etherSigner?.getAddress()!,
+      signMessage: async (message: string) => {
+        const signature = await etherSigner?.signMessage(message);
+        return toBytes(signature!);
+      }
+    }
+    const client = await createClient(signer);
     setClient(client);
-  }, [])
+  }, [etherSigner, etherProvider])
 
   useEffect(() => {
+    if(etherSigner == undefined) return
     if(!client) {
       handleCreateClient();
     }
-  }, [])
+  }, [etherSigner])
 
   const handleSelectConversation = (conversation: Conversation) => {
     setSelectedConversation(conversation);
@@ -27,7 +43,7 @@ const Chat = () => {
   const handleDeSelectConversation = () => {
     setSelectedConversation(undefined);
   }
-     
+  
   return (
     <div className="size-full grid grid-cols-12 overflow-hidden relative">
       <div className="inset-0 w-full md:static col-span-12 md:col-span-3">

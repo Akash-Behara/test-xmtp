@@ -3,6 +3,7 @@ import { useQuery } from "@tanstack/react-query";
 import { UsersThree } from "@phosphor-icons/react";
 import { Client, Conversation } from "@xmtp/browser-sdk";
 import CreateGroupModal from "./Group/CreateGroupModal";
+import { useEffect } from "react";
 
 interface ConversationsProps {
   client: Client | null;
@@ -18,6 +19,11 @@ const Conversations = ({ client, handleSelectConversation }: ConversationsProps)
     queryFn: async () => await client!.conversations.list(),
     enabled: !!client
   })
+
+  useEffect(() => {
+    if(!conversationList) return
+    handleSelectConversation(conversationList[0])
+  }, [conversationList])
 
   return (
     <div className="h-screen flex flex-col bg-black70">

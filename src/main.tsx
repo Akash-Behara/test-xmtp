@@ -9,7 +9,7 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { BrowserRouter } from 'react-router-dom'
 
 export const config = getDefaultConfig({
-  appName: "XMTP V3 Browser SDK Example Test",
+  appName: "XMTP V3",
   projectId: import.meta.env.VITE_PROJECT_ID as string,
   chains: [mainnet],
   transports: {

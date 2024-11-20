@@ -29,11 +29,11 @@ const Chat = () => {
   }
      
   return (
-    <div className="size-full grid grid-cols-12">
-      <div className="absolute w-full md:static col-span-12 md:col-span-3">
+    <div className="size-full grid grid-cols-12 overflow-hidden relative">
+      <div className="inset-0 w-full md:static col-span-12 md:col-span-3">
         <Conversations client={client} handleSelectConversation={handleSelectConversation}/>
       </div>
-      <div className={`${selectedConversation ? "translate-x-0 z-10" : "translate-x-[1000px] md:translate-x-0"} transition duration-300 col-span-12 md:col-span-9 h-screen flex flex-col rounded-md`}>
+      <div className={`absolute md:static inset-0 ${selectedConversation ? "translate-x-0 z-10" : "translate-x-full md:translate-x-0"} transition duration-300 col-span-12 md:col-span-9  flex flex-col rounded-md`}>
         <Messages client={client} selectedConversation={selectedConversation} handleDeSelectConversation={handleDeSelectConversation}/>
       </div>
     </div>

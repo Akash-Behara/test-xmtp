@@ -12,7 +12,7 @@ export default {
   			black70: '#181818',
   			black60: '#212121',
   			black40: '#252525',
-  			black20: '##2B2B2B',
+  			black20: '#2B2B2B',
   			white32: '#FFFFFF52',
   			white88: '#FFFFFFE0',
   			white48: '#FFFFFF7A',

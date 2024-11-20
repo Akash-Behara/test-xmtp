@@ -27,8 +27,8 @@ class ErrorBoundary extends React.Component<ErrorBoundaryProps, ErrorBoundarySta
       return (
         <div className="flex justify-center items-center h-screen">
           <div>
-            <h1 className="prose-DisplaySmall">Something went wrong :/</h1>
-            <p className="prose-BodyLarge">Please refresh the page.</p>
+            <h1 className="text-black">Something went wrong :/</h1>
+            <p className="text-black/80">Please refresh the page.</p>
           </div>
         </div>
       );

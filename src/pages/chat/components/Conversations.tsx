@@ -1,8 +1,7 @@
-import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 
-import { Client, Conversation } from "@xmtp/browser-sdk";
 import { UsersThree } from "@phosphor-icons/react";
+import { Client, Conversation } from "@xmtp/browser-sdk";
 import CreateGroupModal from "./Group/CreateGroupModal";
 
 interface ConversationsProps {
@@ -12,7 +11,7 @@ interface ConversationsProps {
 
 const Conversations = ({ client, handleSelectConversation }: ConversationsProps) => {
 
-  const [conversations, setConversations] = useState<Conversation[]>([]);
+  // const [conversations, setConversations] = useState<Conversation[]>([]);
 
   const {data: conversationList, isLoading: isLoadingConversations} = useQuery({
     queryKey: ["conversations"],

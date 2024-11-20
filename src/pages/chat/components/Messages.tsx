@@ -1,5 +1,5 @@
 import { ArrowLeft, Plus, Smiley, UsersThree } from "@phosphor-icons/react";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { Client, Conversation } from "@xmtp/browser-sdk";
 import { useCallback, useRef, useState } from "react";
 
@@ -61,7 +61,7 @@ const Messages = ({ client, selectedConversation, handleDeSelectConversation }: 
       return oldMessages ? [...oldMessages, { content: message, contentType: { typeId: "text" } }] : [{ content: message, contentType: { typeId: "text" } }];
     });
     await selectedConversation?.send(message);
-    queryClient.invalidateQueries(['messages', selectedConversation?.id]);
+    queryClient.invalidateQueries(['messages', selectedConversation?.id] as any);
   }, [queryClient, selectedConversation?.id]);
 
   return (

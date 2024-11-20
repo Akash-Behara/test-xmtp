@@ -1,12 +1,12 @@
-import './App.css'
-import Chat from './pages/chat/Chat'
+import ErrorBoundary from './components/Errorboundary'
+import Layout from './Layout'
 
 function App() {
 
   return (
-    <>
-      <Chat />
-    </>
+    <ErrorBoundary>
+      <Layout />
+    </ErrorBoundary>
   )
 }
 

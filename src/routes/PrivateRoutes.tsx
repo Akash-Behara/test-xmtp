@@ -1,9 +1,10 @@
-import { useState } from 'react';
 import { Navigate, Outlet } from 'react-router-dom';
 // import { authMiddleware } from '../lib/authMiddleware';
 
 const PrivateRoute = () => {
-  const [isAuthenticated, setIsAuthenticated] = useState<boolean>(true);
+  // const [isAuthenticated, setIsAuthenticated] = useState<boolean>(true);
+
+  const isAuthenticated = true;
 
 //   useEffect(() => {
 //     const checkAuth = async () => {

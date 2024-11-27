@@ -1,6 +1,6 @@
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { ArrowLeft, MagnifyingGlass, Placeholder, Plus, SpinnerGap, UsersThree } from "@phosphor-icons/react";
-import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useQueryClient } from "@tanstack/react-query";
 import { Client, PermissionLevel } from "@xmtp/browser-sdk";
 import React, { useRef, useState } from 'react';
 import { CustomUserSafeGroupMember } from "../../utils/types";

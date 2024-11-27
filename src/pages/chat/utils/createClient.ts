@@ -1,7 +1,5 @@
-import { Client, Signer } from "@xmtp/browser-sdk";
+import { Client, type Signer } from "@xmtp/browser-sdk";
 import { toBytes } from "viem/utils";
-
-
 
 export const createClient = async (signer: Signer) => {
   const encryptionKeyHex = import.meta.env.VITE_ENCRYPTION_KEY;

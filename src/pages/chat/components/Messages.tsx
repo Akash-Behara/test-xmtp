@@ -1,7 +1,10 @@
-import { ArrowLeft, Plus, Smiley, UsersThree } from "@phosphor-icons/react";
+import { Dialog, DialogTrigger } from "@/components/ui/dialog";
+import { ArrowLeft, DotsThreeVertical, Plus, User, UsersThree } from "@phosphor-icons/react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { Client, Conversation } from "@xmtp/browser-sdk";
+import { Client, Conversation, DecodedMessage } from "@xmtp/browser-sdk";
 import { useCallback, useRef, useState } from "react";
+import GroupInfoModal from "./Group/GroupInfoModal";
+import TextInputArea from "./ui/TextInputArea";
 
 interface MessagesProps {
   client: Client | null;
@@ -12,8 +15,12 @@ interface MessagesProps {
 const Messages = ({ client, selectedConversation, handleDeSelectConversation }: MessagesProps) => {
   const queryClient = useQueryClient();
 
+  const [conversation, setConversation] = useState<Conversation | undefined>();
+
   const getMessages = async () => {
+    if(!client || !selectedConversation) return [];
     const conversation = new Conversation(client!, selectedConversation?.id!);
+    setConversation(conversation);
     const messages = await conversation.messages();
     return messages;
   }
@@ -21,48 +28,57 @@ const Messages = ({ client, selectedConversation, handleDeSelectConversation }: 
   const {data: messages, isLoading: isLoadingMessages} = useQuery({
     queryKey: ["messages", selectedConversation?.id],
     queryFn: getMessages,
-    enabled: !!client
+    // enabled: !!client || !!selectedConversation
   })
 
-
   const {data: members, isLoading: isLoadingMembers} = useQuery({
-    queryKey: ["members", selectedConversation?.id],
-    queryFn: async () => await selectedConversation?.members(),
-    enabled: !!client && !!selectedConversation
+    queryKey: ["members", conversation?.id],
+    queryFn: async () => await conversation?.members(),
+    enabled: !!client || !!selectedConversation
   })
 
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
-  const [isExpanded, setIsExpanded] = useState(false);
+  const sendMessage = useCallback(async () => {
+    queryClient.setQueryData(['messages', selectedConversation?.id], (oldMessages: any) => {
+      return oldMessages ? [...oldMessages, { content: textareaRef?.current?.value, senderInboxId: client?.inboxId, contentType: { typeId: "text" } }] : [{ content: textareaRef?.current?.value, senderInboxId: client?.inboxId, contentType: { typeId: "text" } }];
+    });
+    queryClient.setQueryData(['conversations'], (oldConversations: any) => {
+      if (!oldConversations) return oldConversations;
 
-  const handleInputChange = () => {
-    if (textareaRef.current) {
-      textareaRef.current.style.height = "auto"; // Reset height
-      textareaRef.current.style.height = `${textareaRef.current.scrollHeight}px`; // Adjust height
-      setIsExpanded(textareaRef.current.scrollHeight > 40); // Check height to toggle border style
-    }
-  };
+      return oldConversations.map((convo: any) =>
+        convo.id === conversation?.id
+          ? { ...convo, lastMessage: textareaRef?.current?.value, lastMessageTime: new Date().getTime() }
+          : convo
+      );
+    });
+    await conversation?.send(textareaRef?.current?.value);
+    queryClient.invalidateQueries(['messages', selectedConversation?.id] as any);
+    // queryClient.invalidateQueries(['conversations'] as any);
 
-  const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
-    if (e.key === "Enter" && !e.shiftKey) {
-      e.preventDefault();
+  }, [queryClient, conversation, selectedConversation?.id]);
 
-      if(!textareaRef.current?.value) return;
-      sendMessage(textareaRef?.current?.value);  
-      console.log("Message sent:", textareaRef.current?.value);
+  console.log("Messages:", messages);
+  console.log('conversation:', conversation);
 
-      if (textareaRef.current) textareaRef.current.value = "";
-      handleInputChange(); // Reset the height
+  const MessageContainer = ({message}: {message: DecodedMessage}) => {
+ 
+    const isCurrentUser = client?.inboxId == message?.senderInboxId
+
+    if(message?.contentType?.typeId != "text") return null
+
+    if(message?.contentType?.typeId == "text") {
+      return (
+        <div className="w-full h-auto px-2 mb-2">
+          <div className={`flex ${isCurrentUser ? "justify-end" : "justify-start"}`}>
+            <div className={`${isCurrentUser ? "bg-green-500" : "bg-white/40 text-white"} max-w-[75%] p-2 rounded-md`}>
+              {message?.content}
+            </div>
+          </div>
+        </div>
+      )
     }
   }
-
-  const sendMessage = useCallback(async (message: string) => {
-    queryClient.setQueryData(['messages', selectedConversation?.id], (oldMessages: any) => {
-      return oldMessages ? [...oldMessages, { content: message, contentType: { typeId: "text" } }] : [{ content: message, contentType: { typeId: "text" } }];
-    });
-    await selectedConversation?.send(message);
-    queryClient.invalidateQueries(['messages', selectedConversation?.id] as any);
-  }, [queryClient, selectedConversation?.id]);
 
   return (
     <div className="h-screen flex flex-col rounded-md">
@@ -70,17 +86,33 @@ const Messages = ({ client, selectedConversation, handleDeSelectConversation }: 
         <div className="mr-2 block md:hidden">
           <ArrowLeft size={20} weight="bold" onClick={handleDeSelectConversation} className="cursor-pointer text-white88"/>
         </div>
-        <div className="flex items-center gap-2">
-          <div className="bg-white/80 rounded-full p-2">
-            <UsersThree className="size-4 md:size-8"/>
+        <div className="flex justify-between items-center w-full">
+          <div className="flex items-center gap-2">
+            <div className="bg-white/80 rounded-full p-2">
+              {selectedConversation?.metadata?.conversationType == "dm" 
+                ? <User color="#000" weight="fill" size={24}/>
+                : <UsersThree color="#000" weight="fill" size={24}/>
+              }
+            </div>
+            <div>
+              <p className="font-semibold text-white88">{
+                isLoadingMembers ? "Loading..." :
+                selectedConversation?.metadata?.conversationType == "dm" ? members && members![0]?.accountAddresses[0]?.slice(0, 5) + "..." + members![0]?.accountAddresses[0]?.slice(-5) :
+                selectedConversation?.name
+              }
+              </p>
+              {selectedConversation?.metadata?.conversationType != "dm" && <div className="flex items-center gap-2">
+                {isLoadingMembers ? <div>Loading...</div> : members?.map((member, idx) => (
+                  <p key={idx} className="text-white32 text-[12px]">{member.accountAddresses[0]?.slice(0, 5) + "..." + member?.accountAddresses[0]?.slice(-5)} {idx < members.length - 1 && ","}</p>
+                ))}
+              </div>}
+            </div>
           </div>
           <div>
-            <p className="font-semibold text-white88">{selectedConversation?.name}</p>
-            <div className="flex items-center gap-2">
-              {isLoadingMembers ? <div>Loading...</div> : members?.map((member, idx) => (
-                <p key={idx} className="text-white32 text-[12px]">{member.accountAddresses[0]?.slice(0, 5) + "..." + member?.accountAddresses[0]?.slice(-5)} {idx < members.length - 1 && ","}</p>
-              ))}
-            </div>
+            <Dialog>
+              <DialogTrigger><DotsThreeVertical className="text-white88 hover:text-white cursor-pointer size-6 hover:scale-105 transition duration-100"/></DialogTrigger>
+              <GroupInfoModal client={client} groupDetails={selectedConversation} members={members}/>
+            </Dialog>
           </div>
         </div>
       </div>
@@ -91,7 +123,7 @@ const Messages = ({ client, selectedConversation, handleDeSelectConversation }: 
         messages?.map((message, idx) => {
           if(message?.contentType?.typeId != "text") return null
           return <div key={idx}>
-            <p className="text-white88">{message?.content}</p>
+            <MessageContainer message={message} />
           </div>
         })}
       </div>
@@ -99,22 +131,8 @@ const Messages = ({ client, selectedConversation, handleDeSelectConversation }: 
       <div className="min-h-[50px] h-auto bg-black60 flex items-center gap-2 px-2 py-1">
         <div>
           <Plus size={24} className="text-white88"/>
-          <div></div>
         </div>
-        <div className={`w-full flex items-center mx-auto relative bg-black70 transition duration-300 ${isExpanded ? "rounded-md" : " rounded-full"}`}>
-          <textarea
-            ref={textareaRef}
-            className={`w-full max-w-[97%] px-3 py-2 text-sm text-white88 outline-none resize-none overflow-hidden bg-transparent transition duration-300 ${
-              isExpanded ? "rounded-md" : "rounded-full"
-            }`}
-
-            placeholder="Type your message..."
-            onInput={handleInputChange}
-            onKeyDown={handleKeyDown}
-            rows={1}
-          />
-          <div className="absolute right-2 top-1/2 -translate-y-1/2"><Smiley size={24} className="text-white88"/></div>
-        </div>
+        <TextInputArea textareaRef={textareaRef} handleSubmit={sendMessage} hasIcon/>
       </div>
     </div>
   )

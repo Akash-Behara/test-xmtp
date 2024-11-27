@@ -27,6 +27,8 @@ const Chat = () => {
     }
     const client = await createClient(signer);
     setClient(client);
+    await client.conversations.sync()
+    
   }, [etherSigner, etherProvider])
 
   useEffect(() => {
@@ -47,7 +49,7 @@ const Chat = () => {
   return (
     <div className="size-full grid grid-cols-12 overflow-hidden relative">
       <div className="inset-0 w-full md:static col-span-12 md:col-span-3">
-        <Conversations client={client} handleSelectConversation={handleSelectConversation}/>
+        <Conversations client={client} selectedConversation={selectedConversation} handleSelectConversation={handleSelectConversation}/>
       </div>
       <div className={`absolute md:static inset-0 ${selectedConversation ? "translate-x-0 z-10" : "translate-x-full md:translate-x-0"} transition duration-300 col-span-12 md:col-span-9  flex flex-col rounded-md`}>
         <Messages client={client} selectedConversation={selectedConversation} handleDeSelectConversation={handleDeSelectConversation}/>

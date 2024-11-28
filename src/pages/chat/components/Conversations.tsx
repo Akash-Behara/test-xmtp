@@ -15,12 +15,12 @@ const Conversations = ({ client, handleSelectConversation }: ConversationsProps)
 
   const getConversations = async () => {
     if (!client) return [];
-    await client.conversations.sync();
+    await client?.conversations?.sync();
 
-    const conversations = await client.conversations.list();
+    const conversations = await client?.conversations?.list();
 
     const conversationData = await Promise.all(
-      conversations.map(async (convo: Conversation) => {
+      conversations?.map(async (convo: Conversation) => {
         const messages = await convo.messages({ limit: 1n });
         const lastMessage = messages[0] || null;
         const members = await convo.members();
@@ -46,6 +46,7 @@ const Conversations = ({ client, handleSelectConversation }: ConversationsProps)
 
     return conversationData;
   }
+
 
   const {data: conversationList, isLoading: isLoadingConversations} = useQuery({
     queryKey: ["conversations"],

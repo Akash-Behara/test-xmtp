@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { Smiley } from '@phosphor-icons/react';
+import { PaperPlaneTilt, Smiley } from '@phosphor-icons/react';
 
 interface TextInputAreaProps {
   textareaRef: React.RefObject<HTMLTextAreaElement>;
@@ -40,6 +40,13 @@ const TextInputArea = ({ textareaRef, defaultValue, hasIcon = false, handleSubmi
     if(textareaRef.current?.value?.length! > 40) setIsExpanded(true);
   };
 
+  const sendMessage = () => {
+    if(!textareaRef.current?.value) return;
+    handleSubmit!();
+    if (textareaRef.current) textareaRef.current.value = "";
+    handleInputChange(); // Reset the height
+  }
+
   useEffect(() => {
     adjustTextareaHeight();
   }, [defaultValue]);
@@ -58,8 +65,11 @@ const TextInputArea = ({ textareaRef, defaultValue, hasIcon = false, handleSubmi
         rows={1}
         style={{ minHeight: "auto", maxHeight: "200px" }} // Optional: limit max height
       />
-      {hasIcon && 
-        <div className="absolute right-2 top-1/2 -translate-y-1/2"><Smiley size={24} className="text-white88"/></div>
+      {hasIcon &&
+        <div className="absolute right-2 top-1/2 -translate-y-1/2 flex items-center gap-1">
+          <div onClick={sendMessage} className='bg-green-500 rounded-full p-1'><PaperPlaneTilt size={14} weight='fill' className='text-white'/></div>
+          <Smiley size={24} className="text-white88"/>
+        </div>
       }
     </div>
   )

@@ -96,7 +96,6 @@ const CreateGroupModal = ({ client, conversationList, handleSelectConversation }
   
     // Create a new 1:1 conversation if none exists
     const convo = await client!.conversations.newDm(address);
-    console.log("new 1:1 conversation:", convo);
     queryClient.invalidateQueries(["conversations"] as any);
     handleSelectConversation(convo);
     setShowPopover(false);
@@ -126,8 +125,8 @@ const CreateGroupModal = ({ client, conversationList, handleSelectConversation }
                 <div key={user?.address} onClick={() => {handleStartOneonOneConversation(user?.accountAddresses[0])}} className="flex items-center gap-1 mb-2 hover:bg-white7 rounded-sm cursor-pointer py-2 px-2">
                   <div className="h-10 w-10 bg-white32 rounded-full"/>
                   <div className="flex flex-col">
-                    <p className="text-white64 text-[14px]"> {user?.name}</p>
-                    <p className="text-white32 text-[12px]">{user?.accountAddresses[0]?.slice(0,5) + "..." + user?.accountAddresses[0]?.slice(-5)}</p>
+                    <p className="text-white88 text-[14px]"> {user?.name}</p>
+                    <p className="text-white64 text-[12px]">{user?.accountAddresses[0]?.slice(0,5) + "..." + user?.accountAddresses[0]?.slice(-5)}</p>
                   </div>
                 </div>
               ))}
@@ -212,5 +211,7 @@ export default CreateGroupModal
 const dummyUsers: CustomUserSafeGroupMember[] = [
   {name: "Ak BRAVE", address: "0xb879f1d8FD73EC057c02D681880169e5721a6d7F", accountAddresses:['0xb879f1d8FD73EC057c02D681880169e5721a6d7F'], canMessage: true, consentState: 1, inboxId: "1ea988ca835c1cc70d35524af40a83c448223a19e3ec931888b115964f585adc", installationIds: ['x:76ded41ba7dc789475c7d21b2c49fafab446849f'], permissionLevel: PermissionLevel.Member, pfp: "https://randomuser.me/api/portraits"},
   {name: "Ak", address: "0x0e3E591cdA42517D6DEd61D9DC3165AdDD179a8d", pfp: "https://randomuser.me/api/portraits", accountAddresses:['0x0e3E591cdA42517D6DEd61D9DC3165AdDD179a8d'], canMessage: true, consentState: 1, inboxId: "d419f05022dc79deedab681642127c046858cfba480525c7cde5160bf64d4f33", installationIds: ["x:4926fbdb8e59dc7141e43722373841a65ea6930b"], permissionLevel: PermissionLevel.SuperAdmin},
+  {name: "defiKaran.eth", address: "0xc14a874a16944a29843e860339e65d5ec44f8b30", pfp: "https://randomuser.me/api/portraits", accountAddresses:['0xc14a874a16944a29843e860339e65d5ec44f8b30'], canMessage: true, consentState: 1, inboxId: "7d46b4a0fb3c1be3d85f931836e145d15e637de71c0c45c799ef610c64a963df", installationIds: ['x:a054e1a1ef78d07087861abcb12af9e8fead7f96'], permissionLevel: PermissionLevel.SuperAdmin},
+  {name: "kumabhin.eth", address: "0x6279436a2a8a96cc85731939bfdbc2d57f3d6e30", pfp: "https://randomuser.me/api/portraits", accountAddresses:['0x6279436a2a8a96cc85731939bfdbc2d57f3d6e30'], canMessage: true, consentState: 1, inboxId: "82c69ac981d278ae689c126f3a8036b351e80eab58dbb87b973426084d408c5a", installationIds: ['x:3fd8880319fe300174aca7286c80cf75bd167acf'], permissionLevel: PermissionLevel.SuperAdmin},
   // {name: "BOT", address: "0x4B901D50c5E33787759281eb8B7A3fFf165BA5e7", pfp: "https://randomuser.me/api/portraits", accountAddresses:['0x4B901D50c5E33787759281eb8B7A3fFf165BA5e7'], canMessage: true, consentState: 1, inboxId: "d419f05022dc79deedab681642127c046858cfba480525c7cde5160bf64d4f33", installationIds: ["x:4926fbdb8e59dc7141e43722373841a65ea6930b"], permissionLevel: PermissionLevel.SuperAdmin},
 ]

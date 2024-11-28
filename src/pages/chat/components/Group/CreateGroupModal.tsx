@@ -84,12 +84,9 @@ const CreateGroupModal = ({ client, conversationList, handleSelectConversation }
   // })
 
   const handleStartOneonOneConversation = async (address: string) => {
-    // Check if a conversation already exists
     const existingConvo = conversationList?.find((convo: any) => 
       convo.mem.some((member: any) => member.accountAddresses.includes(address?.trim()?.toLowerCase()))
     );
-  
-    console.log("existingConvo:", existingConvo);
   
     if (existingConvo) {
       handleSelectConversation(existingConvo);
@@ -105,7 +102,6 @@ const CreateGroupModal = ({ client, conversationList, handleSelectConversation }
     setShowPopover(false);
   };
   
-
   // console.log('conversationList:', conversationList);
   
   return (
@@ -114,21 +110,25 @@ const CreateGroupModal = ({ client, conversationList, handleSelectConversation }
         <PopoverTrigger asChild><button onClick={() => {setShowPopover((prev) => !prev); setIsMakingNewGroup(false)}} className="bg-white4 rounded-md p-2"><Plus size={18} weight="bold" className="text-white88"/></button></PopoverTrigger>
         <PopoverContent className="bg-black90 border border-white12 min-w-[150px] mx-2 mr-3 w-[95vw] md:w-[400px] p-0 overflow-hidden relative h-full">
 
-          <div onClick={handleMakeNewGroup} className={`${isMakingNewGroup ? "hidden" : "block"} text-white88 text-[14px] flex items-center gap-2 hover:bg-black70 cursor-pointer p-2`}><UsersThree size={18}/> New Group</div>
+          <div onClick={handleMakeNewGroup} className={`${isMakingNewGroup ? "hidden" : "block"} text-white88 text-[14px] flex items-center gap-2 hover:bg-black70 cursor-pointer p-2 mt-1`}><UsersThree size={22} weight="fill"/> New Group</div>
+          <div className="h-[1px] w-[98%] bg-black40 my-1 mx-auto"/>
 
           {!isMakingNewGroup &&
           <div className="">
             <div className="p-2">
-              <p className="text-white88">Users</p>
+              <p className="text-white88 text-[14px]">Users</p>
             </div>
 
-            <div className="h-[1px] w-[90%] bg-black40 my-1 mx-auto"/>
+            <div className="h-[1px] w-[98%] bg-black40 my-1 mx-auto"/>
 
             <div className="">
               {dummyUsers.map((user) => (
                 <div key={user?.address} onClick={() => {handleStartOneonOneConversation(user?.accountAddresses[0])}} className="flex items-center gap-1 mb-2 hover:bg-white7 rounded-sm cursor-pointer py-2 px-2">
-                  <div className="h-6 w-6 bg-white32 rounded-full"/>
-                  <p className="text-white64"> {user?.name}</p>
+                  <div className="h-10 w-10 bg-white32 rounded-full"/>
+                  <div className="flex flex-col">
+                    <p className="text-white64 text-[14px]"> {user?.name}</p>
+                    <p className="text-white32 text-[12px]">{user?.accountAddresses[0]?.slice(0,5) + "..." + user?.accountAddresses[0]?.slice(-5)}</p>
+                  </div>
                 </div>
               ))}
             </div>
@@ -212,5 +212,5 @@ export default CreateGroupModal
 const dummyUsers: CustomUserSafeGroupMember[] = [
   {name: "Ak BRAVE", address: "0xb879f1d8FD73EC057c02D681880169e5721a6d7F", accountAddresses:['0xb879f1d8FD73EC057c02D681880169e5721a6d7F'], canMessage: true, consentState: 1, inboxId: "1ea988ca835c1cc70d35524af40a83c448223a19e3ec931888b115964f585adc", installationIds: ['x:76ded41ba7dc789475c7d21b2c49fafab446849f'], permissionLevel: PermissionLevel.Member, pfp: "https://randomuser.me/api/portraits"},
   {name: "Ak", address: "0x0e3E591cdA42517D6DEd61D9DC3165AdDD179a8d", pfp: "https://randomuser.me/api/portraits", accountAddresses:['0x0e3E591cdA42517D6DEd61D9DC3165AdDD179a8d'], canMessage: true, consentState: 1, inboxId: "d419f05022dc79deedab681642127c046858cfba480525c7cde5160bf64d4f33", installationIds: ["x:4926fbdb8e59dc7141e43722373841a65ea6930b"], permissionLevel: PermissionLevel.SuperAdmin},
-  {name: "BOT", address: "0x4B901D50c5E33787759281eb8B7A3fFf165BA5e7", pfp: "https://randomuser.me/api/portraits", accountAddresses:['0x4B901D50c5E33787759281eb8B7A3fFf165BA5e7'], canMessage: true, consentState: 1, inboxId: "d419f05022dc79deedab681642127c046858cfba480525c7cde5160bf64d4f33", installationIds: ["x:4926fbdb8e59dc7141e43722373841a65ea6930b"], permissionLevel: PermissionLevel.SuperAdmin},
+  // {name: "BOT", address: "0x4B901D50c5E33787759281eb8B7A3fFf165BA5e7", pfp: "https://randomuser.me/api/portraits", accountAddresses:['0x4B901D50c5E33787759281eb8B7A3fFf165BA5e7'], canMessage: true, consentState: 1, inboxId: "d419f05022dc79deedab681642127c046858cfba480525c7cde5160bf64d4f33", installationIds: ["x:4926fbdb8e59dc7141e43722373841a65ea6930b"], permissionLevel: PermissionLevel.SuperAdmin},
 ]

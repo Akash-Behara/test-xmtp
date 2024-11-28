@@ -21,6 +21,7 @@ const Messages = ({ client, selectedConversation, handleDeSelectConversation }: 
     if(!client || !selectedConversation) return [];
     const conversation = new Conversation(client!, selectedConversation?.id!);
     setConversation(conversation);
+    await conversation?.sync();
     const messages = await conversation.messages();
     return messages;
   }
@@ -29,6 +30,7 @@ const Messages = ({ client, selectedConversation, handleDeSelectConversation }: 
     queryKey: ["messages", selectedConversation?.id],
     queryFn: getMessages,
     // enabled: !!client || !!selectedConversation
+    refetchInterval: 1500
   })
 
   const {data: members, isLoading: isLoadingMembers} = useQuery({
@@ -57,9 +59,6 @@ const Messages = ({ client, selectedConversation, handleDeSelectConversation }: 
     // queryClient.invalidateQueries(['conversations'] as any);
 
   }, [queryClient, conversation, selectedConversation?.id]);
-
-  console.log("Messages:", messages);
-  console.log('conversation:', conversation);
 
   const MessageContainer = ({message}: {message: DecodedMessage}) => {
  
@@ -97,7 +96,7 @@ const Messages = ({ client, selectedConversation, handleDeSelectConversation }: 
             <div>
               <p className="font-semibold text-white88">{
                 isLoadingMembers ? "Loading..." :
-                selectedConversation?.metadata?.conversationType == "dm" ? members && members![0]?.accountAddresses[0]?.slice(0, 5) + "..." + members![0]?.accountAddresses[0]?.slice(-5) :
+                selectedConversation?.metadata?.conversationType == "dm" ? members && members?.filter((user) => user?.accountAddresses[0]?.trim()?.toLowerCase() != client?.accountAddress?.trim()?.toLowerCase())[0]?.accountAddresses[0] :
                 selectedConversation?.name
               }
               </p>

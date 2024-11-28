@@ -12,7 +12,6 @@ interface ConversationsProps {
 
 
 const Conversations = ({ client, handleSelectConversation }: ConversationsProps) => {
-  console.log('client: CONVERSATION', client);
 
   const getConversations = async () => {
     if (!client) return [];
@@ -51,11 +50,9 @@ const Conversations = ({ client, handleSelectConversation }: ConversationsProps)
   const {data: conversationList, isLoading: isLoadingConversations} = useQuery({
     queryKey: ["conversations"],
     queryFn: getConversations,
-    enabled: client != null
+    enabled: client != null,
+    refetchInterval: 1500
   })
-
-  
-  console.log('conversation: CONVERSATION', conversationList);
 
   return (
     <div className="h-screen flex flex-col bg-black70">
@@ -81,11 +78,18 @@ const Conversations = ({ client, handleSelectConversation }: ConversationsProps)
                   }
                 </div>
                 <div className="">
-                  <p className="font-semibold text-white">{
-                    conversation?.metadata?.conversationType == "dm" 
-                      ? conversation?.mem[0]?.accountAddresses[0]?.slice(0, 5) + "..." + conversation?.mem[0]?.accountAddresses[0]?.slice(-5)
-                      : conversation?.name
-                  }
+                  <p className="font-semibold text-white">
+                    {conversation?.metadata?.conversationType === "dm"
+                      ? conversation?.mem
+                          ?.filter((user: any) => {
+                            return user?.accountAddresses[0]?.trim()?.toLowerCase() !== client?.accountAddress?.trim()?.toLowerCase();
+                          })
+                          ?.map((user: any) => {
+                            const address = user?.accountAddresses[0];
+                            return `${address?.slice(0, 5)}...${address?.slice(-5)}`;
+                          })
+                          .join(", ")
+                      : conversation?.name}
                   </p>
                   <p className="font-semibold text-[12px] text-white/60">hi</p>
                 </div> 
